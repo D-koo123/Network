@@ -1,14 +1,28 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
-from .models import User
+from .models import User, Post
 
-
+@csrf_exempt
 def index(request):
-    return render(request, "network/index.html")
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_instance = User.objects.get(id=request.user.id)
+        post = Post(poster = user_instance, post=data.get('post'))
+        post.save()
+        return JsonResponse({"message": "Comment successfully posted!"}, status=201)
+    
+
+    all_posts = Post.objects.all()
+    return render(request, "network/index.html", {
+        "posts" : all_posts
+    })
 
 
 def login_view(request):
@@ -63,8 +77,16 @@ def register(request):
         return render(request, "network/register.html")
 
 
-def all_posts(request):
+def following(request):
     '''
-    A function that returns all posts made by all users
+    A function that returns all posts made by people who the user is following
+    '''
+    return HttpResponse('Checking functioning of all posts functions!')
+
+
+
+def profile(request):
+    '''
+    A function that returns the user profile
     '''
     return HttpResponse('Checking functioning of all posts functions!')
