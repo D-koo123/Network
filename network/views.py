@@ -20,7 +20,7 @@ def index(request):
     
 
     all_posts = Post.objects.all().order_by('-posting_date') 
-    p = Paginator(all_posts, 4)
+    p = Paginator(all_posts, 10)
     page = request.GET.get('page')
     
     display_posts = p.get_page(page)
