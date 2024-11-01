@@ -16,6 +16,20 @@
     {% for post in posts %}
         <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> {{ post.post }} {{post.posting_date}} {{ post.likes }}<br>
     {% endfor %}
+    <br><br>
+    <form action="{% url 'index' %}">
+        {% if posts.has_previous %}
+            <button  name="page" value="{{ posts.previous_page_number }}">Previous</button>
+        {% else %}
+            <button disabled  name="page">Previous</button>
+        {% endif %}
+        {% if posts.has_next %}
+            <button  name="page" value="{{ posts.next_page_number }}">Next</button>
+        {% else %}
+            <button disabled  name="page">Next</button>
+        {% endif %}
+    </form>
+    
 {% endblock %}
 
 
