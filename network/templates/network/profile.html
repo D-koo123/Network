@@ -1,0 +1,25 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'network/post.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    {% if user.is_authenticated %}
+        {% if user.id != poster_id%}
+            <form action="{% url 'profile' poster_id %}" method="POST">
+                {% csrf_token %}
+                {% if followed %}
+                <button name="unfollow" value="unfollow">Unfollow</button>
+            {% else %}
+                <button name="follow" value="follow">Follow</button>
+            {% endif %}
+            </form>
+        {% endif %}
+    {% endif %}
+
+    
+{% endblock %}
+
+

@@ -6,12 +6,15 @@
 {% endblock %}
 
 {% block body %}
-    <form id="submit-form" method="POST">
-        <input id="post" name="post"><br>
-        <input type="submit" value="New Post">
-    </form>
+    {% if user.is_authenticated %}
+        <form id="submit-form" method="POST" action="{% url 'index' %}">
+            {% csrf_token %}
+            <input id="post" name="post"><br>
+            <input type="submit" value="New Post">
+        </form>
+    {% endif %}
     {% for post in posts %}
-        {{ post.poster }} {{ post.post }}<br>
+        <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> {{ post.poster.id }} {{ post.post }} {{user.id}}<br>
     {% endfor %}
 {% endblock %}
 

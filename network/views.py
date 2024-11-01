@@ -5,18 +5,17 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post
 
-@csrf_exempt
+from .models import User, Post, Follow
+
+
 def index(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = request.POST.get('post')
         user_instance = User.objects.get(id=request.user.id)
-        post = Post(poster = user_instance, post=data.get('post'))
+        post = Post(poster = user_instance, post=data)
         post.save()
-        return JsonResponse({"message": "Comment successfully posted!"}, status=201)
     
 
     all_posts = Post.objects.all()
@@ -77,16 +76,32 @@ def register(request):
         return render(request, "network/register.html")
 
 
+def profile(request, poster_id):
+    '''
+    A function that returns the user profile
+    '''
+    followed_instance = User.objects.get(id=poster_id)
+    follower_instance = User.objects.get(id=request.user.id)
+    if request.method == 'POST':
+        if request.POST.get('follow'):
+            follow = Follow(followed = followed_instance, follower=follower_instance)
+            follow.save()
+        else:
+            follow = Follow.objects.filter(followed = followed_instance, follower=follower_instance)
+            follow.delete()
+    
+    followed = Follow.objects.filter(followed = followed_instance, follower = follower_instance).exists()
+    return render(request, 'network/profile.html', {
+        "poster_id" : poster_id,
+        "followed": followed
+    })
+
+
 def following(request):
     '''
     A function that returns all posts made by people who the user is following
     '''
-    return HttpResponse('Checking functioning of all posts functions!')
+    return HttpResponse('Checking functioning  the following posts functions!')
 
 
 
-def profile(request):
-    '''
-    A function that returns the user profile
-    '''
-    return HttpResponse('Checking functioning of all posts functions!')
