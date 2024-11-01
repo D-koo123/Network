@@ -1,0 +1,14 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'network/post.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    {% for post in posts %}
+        <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> {{ post.post }} {{ post.posting_date }} {{user.id}}<br>
+    {% endfor %}
+{% endblock %}
+
+

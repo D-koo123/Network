@@ -14,7 +14,7 @@
         </form>
     {% endif %}
     {% for post in posts %}
-        <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> {{ post.poster.id }} {{ post.post }} {{user.id}}<br>
+        <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> {{ post.post }} {{post.posting_date}} {{ post.likes }}<br>
     {% endfor %}
 {% endblock %}
 

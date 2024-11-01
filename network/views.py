@@ -18,7 +18,7 @@ def index(request):
         post.save()
     
 
-    all_posts = Post.objects.all()
+    all_posts = Post.objects.all().order_by('-posting_date') 
     return render(request, "network/index.html", {
         "posts" : all_posts
     })
@@ -80,20 +80,33 @@ def profile(request, poster_id):
     '''
     A function that returns the user profile
     '''
-    followed_instance = User.objects.get(id=poster_id)
-    follower_instance = User.objects.get(id=request.user.id)
+    # Returns the instance of the poster
+    poster_instance = User.objects.get(id=poster_id)
+
+    # Returns the instance of the loggedin/requester_id user
+    requestor_instance = User.objects.get(id=request.user.id)
+
     if request.method == 'POST':
+        # Check if the requestor want to follow and if so add the details to the database
         if request.POST.get('follow'):
-            follow = Follow(followed = followed_instance, follower=follower_instance)
+            follow = Follow(followed = poster_instance, follower=requestor_instance)
             follow.save()
+        
+        # Else its an unfollow request remove the follow from the database
         else:
-            follow = Follow.objects.filter(followed = followed_instance, follower=follower_instance)
+            follow = Follow.objects.filter(followed = poster_instance, follower=requestor_instance)
             follow.delete()
     
-    followed = Follow.objects.filter(followed = followed_instance, follower = follower_instance).exists()
+    followed = Follow.objects.filter(followed = poster_instance, follower = requestor_instance).exists()
+    no_followers = Follow.objects.filter(followed = requestor_instance).count()
+    no_followed  = Follow.objects.filter(follower = requestor_instance).count()
+    posts  = Post.objects.filter(poster = requestor_instance).order_by('-posting_date') 
     return render(request, 'network/profile.html', {
         "poster_id" : poster_id,
-        "followed": followed
+        "followed": followed,
+        'no_followers': no_followers,
+        'no_followed': no_followed,
+        'posts': posts
     })
 
 
@@ -101,7 +114,15 @@ def following(request):
     '''
     A function that returns all posts made by people who the user is following
     '''
-    return HttpResponse('Checking functioning  the following posts functions!')
+    # Returns the instance of the loggedin/requester_id user
+    requestor_instance = User.objects.get(id=request.user.id)
+    users_followed  = Follow.objects.filter(follower=requestor_instance).values_list('followed', flat=True)
+
+    # Retrieve posts from followed users
+    posts = Post.objects.filter(poster__in=users_followed).order_by('-posting_date') 
+    return render(request, 'network/follow.html', {
+        'posts':posts
+    })
 
 
 

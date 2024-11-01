@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block body %}
+    Followed: {{ no_followed}} Followers: {{ no_followers}}
     {% if user.is_authenticated %}
         {% if user.id != poster_id%}
             <form action="{% url 'profile' poster_id %}" method="POST">
@@ -17,6 +18,9 @@
             {% endif %}
             </form>
         {% endif %}
+        {% for post in posts %}
+            {{ post.post }} <br>
+        {% endfor %}
     {% endif %}
 
     
