@@ -6,27 +6,34 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
-
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post, Follow
+from network.forms import PostForm
 
 
 def index(request):
+    
     if request.method == 'POST':
-        data = request.POST.get('post')
-        user_instance = User.objects.get(id=request.user.id)
-        post = Post(poster = user_instance, post=data)
-        post.save()
-    
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post_instance = Post() # Create a blank instance of the Class post
+            post_instance = form.save(commit=False) # Save the values to the instance but not yet to the database
+            user_instance = User.objects.get(id=request.user.id) 
+            post_instance.poster = user_instance # add the user details to the instance
+            post_instance.save()
+            return HttpResponseRedirect(reverse('index'))
 
-    all_posts = Post.objects.all().order_by('-posting_date') 
-    p = Paginator(all_posts, 10)
-    page = request.GET.get('page')
-    
-    display_posts = p.get_page(page)
-    return render(request, "network/index.html", {
-        "posts" : display_posts
-    })
+    else:
+        form = PostForm()
+        all_posts = Post.objects.all().order_by('-posting_date') 
+        p = Paginator(all_posts, 10)
+        page = request.GET.get('page')  
+        display_posts = p.get_page(page)
+        return render(request, "network/index.html", {
+            "posts" : display_posts,
+            'form':form
+        })
 
 
 def login_view(request):
@@ -130,4 +137,20 @@ def following(request):
     })
 
 
+@csrf_exempt
+def edit(request):
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        post_id = data.get('id')
+        post = data.get('post')
+        post_instance = Post.objects.get(pk=post_id)
+        post_instance.post = post
+        post_instance.save()
+        return JsonResponse({"Success": 'Post edited successfully!'})
+        
+        
 
+
+
+
+        

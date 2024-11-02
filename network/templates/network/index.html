@@ -6,15 +6,30 @@
 {% endblock %}
 
 {% block body %}
+    <!-- testing javascript functionality -->
+     <p id="id-check" class="class-check"> This is a testing site</p>
+     <!--  -->
     {% if user.is_authenticated %}
         <form id="submit-form" method="POST" action="{% url 'index' %}">
             {% csrf_token %}
-            <input id="post" name="post"><br>
+            {{ form.post}} <br>
             <input type="submit" value="New Post">
         </form>
     {% endif %}
-    {% for post in posts %}
-        <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> {{ post.post }} {{post.posting_date}} {{ post.likes }}<br>
+    {% for post in posts %} 
+        <div class="div-posts">
+            <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> 
+            <p class="post" data-id ='{{ post.id }}'> 
+                {{ post.post }}</p> 
+            This is the post id: {{ post.id }}
+            <p>{{post.posting_date}}</p>
+            {{ post.likes }}
+            {% if post.poster.id == user.id %}
+                <a href="#" class="edit">Edit</a><br>
+            {% endif%}
+        </div>
+
+        
     {% endfor %}
     <br><br>
     <nav aria-label="Page navigation example">
