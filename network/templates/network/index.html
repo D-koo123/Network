@@ -21,9 +21,8 @@
             <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> 
             <p class="post" data-id ='{{ post.id }}'> 
                 {{ post.post }}</p> 
-            This is the post id: {{ post.id }}
             <p>{{post.posting_date}}</p>
-            {{ post.likes }}
+            LIkes: <b>{{ post.likes }}</b>
             {% if post.poster.id == user.id %}
                 <a href="#" class="edit">Edit</a><br>
             {% endif%}

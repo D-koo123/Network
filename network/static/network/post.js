@@ -79,3 +79,29 @@ function sendEdit(element, id, event1) {
     element.textContent = document.querySelector('#myTextarea').value;
     event.target.parentElement.replaceChild(element, event.target);
 }
+
+
+
+function updateLike() {
+    const edit = {
+        id : id,
+        post : document.querySelector('#myTextarea').value
+    }
+    const postId = id;
+    fetch('/edit/', {
+      method: 'PUT',
+      headers: {'Content-Type':'applications/json'},    
+      body: JSON.stringify(edit)
+      })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      console.log(data);
+      })
+    .catch(error => {
+      console.log('There was a problem with the fetch operation');
+    });
+    element.textContent = document.querySelector('#myTextarea').value;
+    event.target.parentElement.replaceChild(element, event.target);
+}
