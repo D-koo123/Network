@@ -18,19 +18,24 @@
     <!-- Loop over all the posts made in the network website -->
     {% for post in posts %} 
         <div class="div-posts">
-            <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> 
-            <p class="post" data-id ='{{ post.id }}'>{{ post.post }}</p> 
-            <p>{{post.posting_date}}</p>
+            <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a>
+            <p class="date">{{post.posting_date}}</p>
+            
+            <span class="post" data-id ='{{ post.id }}'>{{ post.post }}</span>
+            {% if post.poster.id == user.id %}
+                <a href="#" class="edit">Edit</a><br>
+            {% endif%}  
+            
             <!-- The user should only be able to like the posts if they are logged in -->
+            <span class="heart">&#9829;</span>
             {% if user.is_authenticated %}
+                
                 {% if post.id in likes %}
-                    <p class="totallikes">{{ post.likes }}</p> lIkes <button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="subtractlike" id='u{{ post.id }}'>Unlike</button> 
+                    <span class="totallikes">{{ post.likes }}</span> <br><button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="subtractlike" id='u{{ post.id }}'>Unlike</button> 
                 {% else %}
-                    <p class="totallikes">{{ post.likes }}</p> lIkes <button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="addlike" id='l{{ post.id }}'>Like</button>
+                    <span class="totallikes">{{ post.likes }}</span> <br><button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="addlike" id='l{{ post.id }}'>Like</button>
                 {% endif %}
-                {% if post.poster.id == user.id %}
-                    <a href="#" class="edit">Edit</a><br>
-                {% endif%}
+                
             {% endif %}
         </div>
     {% endfor %}

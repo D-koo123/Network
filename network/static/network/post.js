@@ -41,7 +41,7 @@ function replacePost(event) {
     textareaElement.rows = 4;
     textareaElement.cols = 50;
     textareaElement.placeholder = 'Post...';
-    //textareaElement.innerHTML = postElement.innerHTML;
+    textareaElement.innerHTML = postElement.innerHTML;
 
     // Create a line break element
     const lineBreak = document.createElement('br');
