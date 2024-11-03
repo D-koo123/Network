@@ -1,15 +1,23 @@
 body {
     margin: 20px;
+    padding-left: 5vw;
+    background-color: #f1f0f0;
 }
 
 
 .div-posts {
-    background-color: lightgrey;
+    background-color: white;
     border: 1px solid black;
     padding: 20px;
     margin-bottom: 5px;
+    max-width: 80vw;
+    border-radius: 5px;
 }
 
+.custom-textarea {
+    width: 80vw;
+    border-radius: 5px;
+}
 .date {
     font-size: x-small;
 }

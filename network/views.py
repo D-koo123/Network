@@ -144,8 +144,12 @@ def following(request):
 
     # Retrieve posts from followed users
     posts = Post.objects.filter(poster__in=users_followed).order_by('-posting_date') 
+    user_instance = User.objects.get(id=request.user.id) 
+    likes = Like.objects.filter(liker=user_instance)
+    like_ids = [like.post.id for like in likes]
     return render(request, 'network/follow.html', {
-        'posts':posts
+        'posts':posts,
+        'likes': like_ids
     })
 
 
