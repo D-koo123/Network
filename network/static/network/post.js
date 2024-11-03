@@ -1,8 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const elements = document.querySelectorAll('.edit');
-    elements.forEach((element) => {
+    const editElements = document.querySelectorAll('.edit');
+    editElements.forEach((element) => {
         element.addEventListener('click', (event)=> {
             replacePost(event);
+        })
+    })
+    const addLikeElements = document.querySelectorAll('.addlike');
+    addLikeElements.forEach((element) => {
+        element.addEventListener('click', (event) => {
+            addLike(event.target.dataset.postid, event.target.dataset.userid, event.target.parentElement.querySelector('.totallikes'));
+        })
+    })
+    const subtractLikeElements = document.querySelectorAll('.subtractlike');
+    subtractLikeElements.forEach((element) => {
+        element.addEventListener('click', (event) => {
+            subtractLike(event.target.dataset.postid, event.target.dataset.userid, event.target.parentElement.querySelector('.totallikes'));
         })
     })
     }
@@ -55,7 +67,7 @@ function replacePost(event) {
 }
 
 
-function sendEdit(element, id, event1) {
+function sendEdit(element, id) {
     //console.log(document.querySelector('#myTextarea').value)
     const edit = {
         id : id,
@@ -82,16 +94,16 @@ function sendEdit(element, id, event1) {
 
 
 
-function updateLike() {
-    const edit = {
-        id : id,
-        post : document.querySelector('#myTextarea').value
+function addLike(postid, userid, likeTag) {
+  // console.log(parseInt(parent.textContent));
+    const addLIke = {
+        liked_post : postid,
+        liker : userid
     }
-    const postId = id;
-    fetch('/edit/', {
-      method: 'PUT',
+    fetch('/like/', {
+      method: 'POST',
       headers: {'Content-Type':'applications/json'},    
-      body: JSON.stringify(edit)
+      body: JSON.stringify(addLIke)
       })
     .then(response => {
       return response.json()
@@ -102,6 +114,51 @@ function updateLike() {
     .catch(error => {
       console.log('There was a problem with the fetch operation');
     });
-    element.textContent = document.querySelector('#myTextarea').value;
-    event.target.parentElement.replaceChild(element, event.target);
+    const parentElement = document.querySelector(`#l${postid}`).parentElement;
+    const newElement = document.createElement('button');
+    newElement.innerHTML = 'Unlike';
+    newElement.setAttribute('data-postid', postid);
+    newElement.setAttribute('data-userid', userid);
+    newElement.className = 'subtractlike'; // Use className for class attribute
+    newElement.id = `u${postid}`; // Set the ID
+    newElement.addEventListener('click', (event) => {
+      subtractLike(event.target.dataset.postid, event.target.dataset.userid);
+    });
+    likeTag.textContent = parseInt(likeTag.textContent) + 1;    
+    parentElement.replaceChild(newElement, document.querySelector(`#l${postid}`))
+    
+}
+
+
+function subtractLike(postid, userid, likeTag) {
+    const subtractLIke = {
+        liked_post : postid,
+        liker : userid
+    }
+    fetch('/like/', {
+      method: 'DELETE',
+      headers: {'Content-Type':'applications/json'},    
+      body: JSON.stringify(subtractLIke)
+      })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      console.log(data);
+      })
+    .catch(error => {
+      console.log('There was a problem with the fetch operation');
+    });
+    const parentElement = document.querySelector(`#u${postid}`).parentElement;
+    const newElement = document.createElement('button');
+    newElement.innerHTML = 'Like';
+    newElement.setAttribute('data-postid', postid);
+    newElement.setAttribute('data-userid', userid);
+    newElement.className = 'addlike'; // Use className for class attribute
+    newElement.id = `l${postid}`; // Set the ID
+    newElement.addEventListener('click', (event) => {
+      addLike(event.target.dataset.postid, event.target.dataset.userid);
+    });
+    likeTag.textContent = parseInt(likeTag.textContent) - 1; 
+    parentElement.replaceChild(newElement, document.querySelector(`#u${postid}`))
 }

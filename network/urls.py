@@ -12,5 +12,6 @@ urlpatterns = [
     path('profile/<int:poster_id>/', views.profile, name= 'profile'),
 
     #API routes
-    path('edit/', views.edit, name= 'edit')
+    path('edit/', views.edit, name= 'edit'),
+    path('like/', views.like, name= 'like')
 ]

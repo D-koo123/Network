@@ -8,12 +8,14 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post, Follow
+from .models import User, Post, Follow, Like
 from network.forms import PostForm
 
 
 def index(request):
-    
+    '''
+    The function returns the home page with all posts by all users
+    '''
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
@@ -30,10 +32,20 @@ def index(request):
         p = Paginator(all_posts, 10)
         page = request.GET.get('page')  
         display_posts = p.get_page(page)
-        return render(request, "network/index.html", {
-            "posts" : display_posts,
-            'form':form
-        })
+        if request.user.id:
+            user_instance = User.objects.get(id=request.user.id) 
+            likes = Like.objects.filter(liker=user_instance)
+            like_ids = [like.post.id for like in likes]
+            return render(request, "network/index.html", {
+                "posts" : display_posts,
+                'form':form,
+                'likes':like_ids
+            })
+        else:
+            return render(request, "network/index.html", {
+                "posts" : display_posts,
+                'form':form
+            })
 
 
 def login_view(request):
@@ -139,6 +151,9 @@ def following(request):
 
 @csrf_exempt
 def edit(request):
+    '''
+    A function that allows the poster to edit their post
+    '''
     if request.method == 'PUT':
         data = json.loads(request.body)
         post_id = data.get('id')
@@ -149,8 +164,30 @@ def edit(request):
         return JsonResponse({"Success": 'Post edited successfully!'})
         
         
+@csrf_exempt
+def like(request):
+    '''
+    A function to update the likes on a post
+    '''
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        post_instance = Post.objects.get(pk=data['liked_post'])
+        user_instance = User.objects.get(pk=data['liker'])
+        like = Like(post=post_instance, liker=user_instance)
+        like.save()
+        post_instance.likes += 1
+        post_instance.save()
+        return JsonResponse({"likes": post_instance.likes})
+
+    
+    elif request.method == 'DELETE':
+        data = json.loads(request.body)
+        post_instance = Post.objects.get(pk=data['liked_post'])
+        user_instance = User.objects.get(pk=data['liker'])
+        like = Like.objects.get(post=post_instance, liker=user_instance)
+        like.delete()
+        post_instance.likes -= 1
+        post_instance.save()
+        return JsonResponse({"likes": post_instance.likes})
 
 
-
-
-        

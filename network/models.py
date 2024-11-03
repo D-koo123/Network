@@ -15,6 +15,17 @@ class Post(models.Model):
 
     def  __str__(self):
         return f'{self.poster} Poster:  Post {self.post}'
+    
+class Like(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='liked_post')
+    liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liker')
+
+    def __str__(self):
+        return f'post: {self.post}'
+
+    class Meta:
+        unique_together = ('post', 'liker') 
+
 
 
 class Follow(models.Model):

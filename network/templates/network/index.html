@@ -5,10 +5,8 @@
     <script src="{% static 'network/post.js' %}"></script>
 {% endblock %}
 
-{% block body %}
-    <!-- testing javascript functionality -->
-     <p id="id-check" class="class-check"> This is a testing site</p>
-     <!--  -->
+{% block body %}    
+    <!-- The user should only be able to post if they are logged in -->
     {% if user.is_authenticated %}
         <form id="submit-form" method="POST" action="{% url 'index' %}">
             {% csrf_token %}
@@ -16,21 +14,29 @@
             <input type="submit" value="New Post">
         </form>
     {% endif %}
+
+    <!-- Loop over all the posts made in the network website -->
     {% for post in posts %} 
         <div class="div-posts">
             <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> 
-            <p class="post" data-id ='{{ post.id }}'> 
-                {{ post.post }}</p> 
+            <p class="post" data-id ='{{ post.id }}'>{{ post.post }}</p> 
             <p>{{post.posting_date}}</p>
-            LIkes: <b>{{ post.likes }}</b>
-            {% if post.poster.id == user.id %}
-                <a href="#" class="edit">Edit</a><br>
-            {% endif%}
+            <!-- The user should only be able to like the posts if they are logged in -->
+            {% if user.is_authenticated %}
+                {% if post.id in likes %}
+                    <p class="totallikes">{{ post.likes }}</p> lIkes <button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="subtractlike" id='u{{ post.id }}'>Unlike</button> 
+                {% else %}
+                    <p class="totallikes">{{ post.likes }}</p> lIkes <button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="addlike" id='l{{ post.id }}'>Like</button>
+                {% endif %}
+                {% if post.poster.id == user.id %}
+                    <a href="#" class="edit">Edit</a><br>
+                {% endif%}
+            {% endif %}
         </div>
-
-        
     {% endfor %}
     <br><br>
+
+    <!-- Pagination navigation pages -->
     <nav aria-label="Page navigation example">
         <ul class="pagination" name="page">
             {% if posts.has_previous %}
@@ -44,7 +50,7 @@
                 <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}">Next</a></li>
             {% else %}
                 <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
                 </li>
             {% endif %}
         </ul>
