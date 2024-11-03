@@ -33,10 +33,6 @@
  </div>
 {% endfor %}
 <br><br>
-<!-- ..... -->
-{% for post in posts %}
-<a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a> {{ post.post }} {{ post.posting_date }} {{user.id}}<br>
-{% endfor %}
 
 <!-- Pagination navigation pages -->
 <nav aria-label="Page navigation example">

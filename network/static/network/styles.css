@@ -1,6 +1,6 @@
 body {
     margin: 20px;
-    padding-left: 5vw;
+    padding-left: 10vw;
     background-color: #f1f0f0;
 }
 
@@ -10,13 +10,14 @@ body {
     border: 1px solid black;
     padding: 20px;
     margin-bottom: 5px;
-    max-width: 80vw;
+    max-width: 70vw;
     border-radius: 5px;
 }
 
 .custom-textarea {
-    width: 80vw;
+    width: 70vw;
     border-radius: 5px;
+    margin-top: 15px;
 }
 .date {
     font-size: x-small;

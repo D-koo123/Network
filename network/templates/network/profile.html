@@ -18,8 +18,33 @@
             {% endif %}
             </form>
         {% endif %}
-        {% for post in posts %}
-            {{ post.post }} <br>
+        {% for post in posts %} 
+            <div class="div-posts">
+                <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a>
+                <p class="date">{{post.posting_date}}</p>
+                
+                <span class="post" data-id ='{{ post.id }}'>{{ post.post }}</span>
+                {% if post.poster.id == user.id %}
+                    <a href="#" class="edit">Edit</a>
+                {% endif%}  
+                
+                <!-- The user should only be able to like the posts if they are logged in -->
+                <br><span class="heart">&#9829;</span>
+                {% if user.is_authenticated %}
+                    {% block content %}
+                        {% if post.id in likes %}
+                            <span class="totallikes">{{ post.likes }}</span> 
+                            <br>
+                            <button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="subtractlike btn btn-secondary" id='u{{ post.id }}'>Unlike</button> 
+                        {% else %}
+                            <span class="totallikes">{{ post.likes }}</span> 
+                            <br>
+                            <button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="addlike btn btn-primary" id='l{{ post.id }}'>Like</button>
+                        {% endif %}
+                    {% endblock %}
+                    
+                {% endif %}
+            </div>
         {% endfor %}
     {% endif %}
 

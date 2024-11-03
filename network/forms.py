@@ -7,6 +7,6 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ["post"]
         widgets = {
-            'post': forms.Textarea(attrs={'rows': 5, 'cols': 180, 'placeholder': "Post......", 'class': 'custom-textarea'})
+            'post': forms.Textarea(attrs={'rows': 5, 'cols': 180, 'placeholder': "Whats on your mind......", 'class': 'custom-textarea','autofocus': 'autofocus'})
         }
         
