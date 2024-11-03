@@ -122,7 +122,7 @@ function addLike(postid, userid, likeTag) {
     newElement.className = 'subtractlike'; // Use className for class attribute
     newElement.id = `u${postid}`; // Set the ID
     newElement.addEventListener('click', (event) => {
-      subtractLike(event.target.dataset.postid, event.target.dataset.userid);
+      subtractLike(event.target.dataset.postid, event.target.dataset.userid, event.target.parentElement.querySelector('.totallikes'));
     });
     likeTag.textContent = parseInt(likeTag.textContent) + 1;    
     parentElement.replaceChild(newElement, document.querySelector(`#l${postid}`))
@@ -157,7 +157,7 @@ function subtractLike(postid, userid, likeTag) {
     newElement.className = 'addlike'; // Use className for class attribute
     newElement.id = `l${postid}`; // Set the ID
     newElement.addEventListener('click', (event) => {
-      addLike(event.target.dataset.postid, event.target.dataset.userid);
+      addLike(event.target.dataset.postid, event.target.dataset.userid, event.target.parentElement.querySelector('.totallikes'));
     });
     likeTag.textContent = parseInt(likeTag.textContent) - 1; 
     parentElement.replaceChild(newElement, document.querySelector(`#u${postid}`))
