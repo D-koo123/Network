@@ -122,13 +122,14 @@ def profile(request, poster_id):
             follow.delete()
     
     followed = Follow.objects.filter(followed = poster_instance, follower = requestor_instance).exists()
-    no_followers = Follow.objects.filter(followed = requestor_instance).count()
-    no_followed  = Follow.objects.filter(follower = requestor_instance).count()
-    posts  = Post.objects.filter(poster = requestor_instance).order_by('-posting_date') 
+    no_followers = Follow.objects.filter(followed = poster_instance).count()
+    no_followed  = Follow.objects.filter(follower = poster_instance).count()
+    posts  = Post.objects.filter(poster = poster_instance).order_by('-posting_date') 
     user_instance = User.objects.get(id=request.user.id) 
     likes = Like.objects.filter(liker=user_instance)
     like_ids = [like.post.id for like in likes]
     return render(request, 'network/profile.html', {
+        'poster': poster_instance,
         "poster_id" : poster_id,
         "followed": followed,
         'no_followers': no_followers,

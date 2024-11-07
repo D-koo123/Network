@@ -39,7 +39,7 @@ function replacePost(event) {
     textareaElement.id = 'myTextarea';
     textareaElement.name = 'post';
     textareaElement.rows = 4;
-    textareaElement.cols = 50;
+    textareaElement.cols = 100;
     textareaElement.placeholder = 'Post...';
     textareaElement.innerHTML = postElement.innerHTML;
 
@@ -68,7 +68,6 @@ function replacePost(event) {
 
 
 function sendEdit(element, id) {
-    //console.log(document.querySelector('#myTextarea').value)
     const edit = {
         id : id,
         post : document.querySelector('#myTextarea').value

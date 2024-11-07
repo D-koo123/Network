@@ -18,7 +18,11 @@
     <!-- Loop over all the posts made in the network website -->
     {% for post in posts %} 
         <div class="div-posts">
-            <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a>
+            {% else %}
+                <p> {{ post.poster }}</p>
+            {% endif %}
             <p class="date">{{post.posting_date}}</p>
             
             <span class="post" data-id ='{{ post.id }}'>{{ post.post }}</span>
@@ -27,15 +31,14 @@
             {% endif%}  
             
             <!-- The user should only be able to like the posts if they are logged in -->
-            <br><span class="heart">&#9829;</span>
+            <br><span class="heart">&#9829</span>
+            <span class="totallikes" style="font-size: small;">{{ post.likes }}</span> 
             {% if user.is_authenticated %}
                 {% block content %}
                     {% if post.id in likes %}
-                        <span class="totallikes">{{ post.likes }}</span> 
                         <br>
                         <button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="subtractlike btn btn-secondary" id='u{{ post.id }}'>Unlike</button> 
-                    {% else %}
-                        <span class="totallikes">{{ post.likes }}</span> 
+                    {% else %} 
                         <br>
                         <button data-postid ='{{ post.id }}' data-userid ='{{ user.id }}' class="addlike btn btn-primary" id='l{{ post.id }}'>Like</button>
                     {% endif %}

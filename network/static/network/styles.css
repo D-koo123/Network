@@ -27,3 +27,14 @@ body {
 .heart {
     color: red;
 }
+
+
+#profile {
+    background-color: darkgray;
+    color: white;
+    margin: 20px;
+    text-align: center;
+    border: 2px solid black;
+    width: 20vw;
+    margin-left: 25vw;
+}

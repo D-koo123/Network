@@ -5,18 +5,26 @@
     <script src="{% static 'network/post.js' %}"></script>
 {% endblock %}
 
-{% block body %}
-    Followed: {{ no_followed}} Followers: {{ no_followers}}
+{% block body %}    
+    <div id="profile">
+        <h3>{{ poster }}</h3>
+        <h6>Following: <span class="badge badge-secondary">{{ no_followed }}</span></h6>
+        <h6>Followers: <span class="badge badge-secondary">{{ no_followers }}</span></h6>
+    </div>
+
+    
     {% if user.is_authenticated %}
         {% if user.id != poster_id%}
-            <form action="{% url 'profile' poster_id %}" method="POST">
-                {% csrf_token %}
-                {% if followed %}
-                <button name="unfollow" value="unfollow">Unfollow</button>
-            {% else %}
-                <button name="follow" value="follow">Follow</button>
-            {% endif %}
-            </form>
+            <div style="margin-left:25vw;padding-left: 7vw;margin-bottom: 5px;">
+                <form action="{% url 'profile' poster_id %}" method="POST">
+                    {% csrf_token %}
+                    {% if followed %}
+                    <button name="unfollow" value="unfollow" class="btn btn-light">Unfollow</button>
+                {% else %}
+                    <button name="follow" value="follow" class="btn btn-dark">Follow</button>
+                {% endif %}
+                </form>
+            </div>
         {% endif %}
         {% for post in posts %} 
             <div class="div-posts">
